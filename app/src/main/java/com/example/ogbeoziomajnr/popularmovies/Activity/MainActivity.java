@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ogbeoziomajnr.popularmovies.CONSTANTS;
 import com.example.ogbeoziomajnr.popularmovies.Model.Movie;
@@ -32,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private MovieAdapter mAdapter;
     private RecyclerView mMovieList;
     GridLayoutManager layoutManager ;
+
+    Button btnTryAgain;
+    TextView txtErrorMessage;
 
     // variables to help with pagination
     private int current_page = 1;
@@ -60,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Loading");
         mProgressDialog.setCancelable(true);
+
+        btnTryAgain = (Button) findViewById(R.id.btn_try_again);
+        txtErrorMessage = (TextView) findViewById(R.id.txt_error_message);
 
         mMovieList = (RecyclerView) findViewById(R.id.rv_movies);
         layoutManager = new GridLayoutManager(this, 2);
@@ -110,6 +120,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 }
             }
         });
+
+        btnTryAgain.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                current_page = 1;
+                movies = new ArrayList<>();
+                if (top_rated) {
+                    getPopularMovies(CONSTANTS.category.TOP_RATED);
+                }
+                else{
+                    getPopularMovies(CONSTANTS.category.POPULAR) ;
+                }
+            }
+        });
     }
 
     @Override
@@ -126,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (itemId) {
 
             case R.id.by_rating:
-                if (top_rated){
+                if (top_rated && !movies.isEmpty()){
 
                 }
                 else {
@@ -138,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 return true;
 
             case R.id.by_popularity:
-                if (!top_rated) {
+                if (!top_rated && !movies.isEmpty()) {
 
                 }
                 else {
@@ -148,6 +171,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 }
                 top_rated = false;
                 return true;
+
+            case R.id.refresh:
+                if(top_rated) {
+                    current_page = 1;
+                    movies = new ArrayList<>();
+                    getPopularMovies(CONSTANTS.category.TOP_RATED);
+                }
+                else{
+                    current_page = 1;
+                    movies = new ArrayList<>();
+                    getPopularMovies(CONSTANTS.category.POPULAR);
+                }
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -166,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onPostResume();
 
         movies = new ArrayList<>();
+        current_page = 1;
         if (top_rated) {
             getPopularMovies(CONSTANTS.category.TOP_RATED);
         }
@@ -179,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
 
 private void getPopularMovies (CONSTANTS.category category) {
+    hideErrorMessage();
     showprogressDialog();
     //Initialise the api interface
     ApiInterface apiService =
@@ -208,20 +246,33 @@ private void getPopularMovies (CONSTANTS.category category) {
             hideprogressDialog();
             // Log error here since request failed
             Log.e(TAG, t.toString());
+            showErrorMessage();
             current_page = 1;
         }
     });
   }
 
-    public  void showprogressDialog() {
+    private   void showprogressDialog() {
         if (!mProgressDialog.isShowing())
             mProgressDialog.show();
     }
 
-    public  void hideprogressDialog() {
+    private   void hideprogressDialog() {
         if (mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
             mProgressDialog.cancel();
         }
+    }
+
+    private void showErrorMessage () {
+        txtErrorMessage.setGravity(Gravity.CENTER);
+        btnTryAgain.setGravity(Gravity.CENTER);
+        txtErrorMessage.setVisibility(View.VISIBLE);
+        btnTryAgain.setVisibility(View.VISIBLE);
+    }
+
+    private void hideErrorMessage () {
+        txtErrorMessage.setVisibility(View.INVISIBLE);
+        btnTryAgain.setVisibility(View.INVISIBLE);
     }
 }

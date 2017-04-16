@@ -10,4 +10,24 @@
         android:layout_height="match_parent"
         />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/txt_error_message"
+        android:textSize="16sp"
+        android:text="@string/error_message"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:includeFontPadding="false"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/btn_try_again"
+        android:text="Try again"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:includeFontPadding="false"
+        />
+
 </LinearLayout>
