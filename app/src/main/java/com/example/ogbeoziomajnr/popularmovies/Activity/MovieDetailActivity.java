@@ -1,4 +1,4 @@
-package com.example.ogbeoziomajnr.popularmovies;
+package com.example.ogbeoziomajnr.popularmovies.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ogbeoziomajnr.popularmovies.Model.Movie;
+import com.example.ogbeoziomajnr.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.IMAGE_BASE_URL;

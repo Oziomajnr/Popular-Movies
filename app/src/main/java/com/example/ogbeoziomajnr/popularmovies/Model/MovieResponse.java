@@ -1,4 +1,4 @@
-package com.example.ogbeoziomajnr.popularmovies.Util;
+package com.example.ogbeoziomajnr.popularmovies.Model;
 
 import com.example.ogbeoziomajnr.popularmovies.Model.Movie;
 import com.google.gson.annotations.SerializedName;

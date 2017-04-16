@@ -1,5 +1,6 @@
-package com.example.ogbeoziomajnr.popularmovies;
+package com.example.ogbeoziomajnr.popularmovies.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,12 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.example.ogbeoziomajnr.popularmovies.CONSTANTS;
 import com.example.ogbeoziomajnr.popularmovies.Model.Movie;
+import com.example.ogbeoziomajnr.popularmovies.MovieAdapter;
+import com.example.ogbeoziomajnr.popularmovies.R;
 import com.example.ogbeoziomajnr.popularmovies.Util.ApiClient;
 import com.example.ogbeoziomajnr.popularmovies.Util.ApiInterface;
-import com.example.ogbeoziomajnr.popularmovies.Util.MovieResponse;
+import com.example.ogbeoziomajnr.popularmovies.Model.MovieResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +32,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private MovieAdapter mAdapter;
     private RecyclerView mMovieList;
     GridLayoutManager layoutManager ;
+
+    // variables to help with pagination
     private int current_page = 1;
     private int total_pages = 1;
+
+    // variable to help keep track of category
     private boolean top_rated = true;
 
-    private boolean loading = true;
+    // to help regulate loading of more items
+    private boolean loading = false;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
-
+    // progress dialog to show loading status
+    ProgressDialog mProgressDialog;
 
     List<Movie> movies = new ArrayList<>();
 
@@ -47,6 +56,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // initialize important variables
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage("Loading");
+        mProgressDialog.setCancelable(true);
 
         mMovieList = (RecyclerView) findViewById(R.id.rv_movies);
         layoutManager = new GridLayoutManager(this, 2);
@@ -55,30 +68,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMovieList.setHasFixedSize(true);
 
         mAdapter = new MovieAdapter(this);
-        //Initialise the api interface
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
 
-        call = apiService.getTopRatedMovies(API_KEY,current_page);
-
-        call.enqueue(new Callback<MovieResponse>() {
-            @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                current_page = 1;
-                movies = response.body().getResults();
-                total_pages = response.body().getTotalPages();
-                mAdapter.setImageUrl(movies);
-
-                Log.d(TAG, "Number of movies received: " + movies.size());
-            }
-
-            @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-                // Log error here since request failed
-                Log.e(TAG, t.toString());
-                current_page = 1;
-            }
-        });
+        if (top_rated)
+            getPopularMovies(CONSTANTS.category.TOP_RATED) ;
+        else{
+            getPopularMovies(CONSTANTS.category.POPULAR) ;
+        }
 
 
         mMovieList.setAdapter(mAdapter);
@@ -94,12 +89,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                     totalItemCount = layoutManager.getItemCount();
                     pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
-                    if (loading)
+                    if (!loading)
                     {
+                        loading = true;
                         if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
                         {
-                            loading = false;
-                            Log.v("...", "Last Item Wow !");
 
                             if (current_page < total_pages) {
                                 current_page++;
@@ -108,8 +102,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                                 else{
                                     getPopularMovies(CONSTANTS.category.POPULAR) ;
                                 }
+
                             }
                         }
+                        loading = false;
                     }
                 }
             }
@@ -128,21 +124,28 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int itemId = item.getItemId();
 
         switch (itemId) {
-            /*
-             * When you click the reset menu item, we want to start all over
-             * and display the pretty gradient again. There are a few similar
-             * ways of doing this, with this one being the simplest of those
-             * ways. (in our humble opinion)
-             */
+
             case R.id.by_rating:
-                // COMPLETED (14) Pass in this as the ListItemClickListener to the GreenAdapter constructor
-                getPopularMovies(CONSTANTS.category.TOP_RATED) ;
+                if (top_rated){
+
+                }
+                else {
+                    current_page =1;
+                    movies = new ArrayList<>();
+                    getPopularMovies(CONSTANTS.category.TOP_RATED);
+                }
                 top_rated = true;
                 return true;
 
             case R.id.by_popularity:
-                // COMPLETED (14) Pass in this as the ListItemClickListener to the GreenAdapter constructor
-                getPopularMovies(CONSTANTS.category.POPULAR);
+                if (!top_rated) {
+
+                }
+                else {
+                    movies = new ArrayList<>();
+                    current_page =1;
+                    getPopularMovies(CONSTANTS.category.POPULAR);
+                }
                 top_rated = false;
                 return true;
         }
@@ -158,11 +161,29 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         startActivity(intent);
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        movies = new ArrayList<>();
+        if (top_rated) {
+            getPopularMovies(CONSTANTS.category.TOP_RATED);
+        }
+        else{
+            getPopularMovies(CONSTANTS.category.POPULAR) ;
+        }
+    }
+
+
+
+
 
 private void getPopularMovies (CONSTANTS.category category) {
+    showprogressDialog();
     //Initialise the api interface
     ApiInterface apiService =
             ApiClient.getClient().create(ApiInterface.class);
+
      if (category == CONSTANTS.category.TOP_RATED) {
          call = apiService.getTopRatedMovies(API_KEY, current_page);
      }
@@ -175,23 +196,32 @@ private void getPopularMovies (CONSTANTS.category category) {
     call.enqueue(new Callback<MovieResponse>() {
         @Override
         public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-            current_page = 1;
+            hideprogressDialog();
             total_pages = response.body().getTotalPages();
-            movies = response.body().getResults();
+            movies.addAll(response.body().getResults());
             mAdapter.setImageUrl(movies);
 
-            Log.d(TAG, "Number of movies received: " + movies.size());
         }
 
         @Override
         public void onFailure(Call<MovieResponse> call, Throwable t) {
+            hideprogressDialog();
             // Log error here since request failed
             Log.e(TAG, t.toString());
             current_page = 1;
         }
     });
+  }
 
-}
+    public  void showprogressDialog() {
+        if (!mProgressDialog.isShowing())
+            mProgressDialog.show();
+    }
 
-
+    public  void hideprogressDialog() {
+        if (mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+            mProgressDialog.cancel();
+        }
+    }
 }
