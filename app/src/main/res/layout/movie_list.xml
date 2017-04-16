@@ -2,15 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
         android:id = "@+id/img_movie_thumbnail"
-        android:scaleType="fitCenter"
-        android:background="#000000"
+        android:scaleType="fitXY"
         android:padding="4dp"
-
         />
 
 </LinearLayout>
