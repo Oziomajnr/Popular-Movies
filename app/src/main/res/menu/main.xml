@@ -5,13 +5,13 @@
     tools:context=".MainActivity">
 
         <item
-            android:id="@+id/by_category"
+            android:id="@+id/by_popularity"
             android:orderInCategory="1"
-            android:title="@string/sort_by_category"
+            android:title="@string/sort_by_popularity"
             />
         <item
-            android:id="@+id/by_popularity"
+            android:id="@+id/by_rating"
             android:orderInCategory="2"
-            android:title="@string/popularity"
+            android:title="@string/sort_by_rating"
             />
 </menu>

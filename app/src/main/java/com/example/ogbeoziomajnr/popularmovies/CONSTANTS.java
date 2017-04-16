@@ -6,5 +6,7 @@ package com.example.ogbeoziomajnr.popularmovies;
 
 public class CONSTANTS {
     public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
-    public static final String API_KEY = "Put in your api key";
+    public static  enum category{
+        POPULAR,TOP_RATED
+    }
 }
