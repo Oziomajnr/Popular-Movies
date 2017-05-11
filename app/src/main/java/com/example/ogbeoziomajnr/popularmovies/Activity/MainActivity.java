@@ -25,6 +25,8 @@ import com.example.ogbeoziomajnr.popularmovies.Model.MovieResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,11 +36,11 @@ import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.API_KEY;
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private MovieAdapter mAdapter;
-    private RecyclerView mMovieList;
     GridLayoutManager layoutManager ;
 
-    Button btnTryAgain;
-    TextView txtErrorMessage;
+    @BindView(R.id.rv_movies) RecyclerView mMovieList;
+    @BindView(R.id.btn_try_again) Button btnTryAgain;
+    @BindView(R.id.txt_error_message) TextView txtErrorMessage;
 
     // variables to help with pagination
     private int current_page = 1;
@@ -63,15 +65,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // bind all views to object using butter knife
+        ButterKnife.bind(this);
+        mMovieList.setNestedScrollingEnabled(false);
+
         // initialize important variables
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Loading");
         mProgressDialog.setCancelable(true);
 
-        btnTryAgain = (Button) findViewById(R.id.btn_try_again);
-        txtErrorMessage = (TextView) findViewById(R.id.txt_error_message);
-
-        mMovieList = (RecyclerView) findViewById(R.id.rv_movies);
         layoutManager = new GridLayoutManager(this, 2);
         mMovieList.setLayoutManager(layoutManager);
 
