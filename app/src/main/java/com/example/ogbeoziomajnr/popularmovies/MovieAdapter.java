@@ -76,13 +76,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
 
         void bind(int position) {
-            Toast.makeText(itemView.getContext(), "CakeLyf", Toast.LENGTH_SHORT);
-            Picasso.with(itemView.getContext()).load(IMAGE_BASE_URL+movies.get(position).getPosterPath()).into(movieImageView);
+            Picasso.with(itemView.getContext()).load(IMAGE_BASE_URL+movies.get(position).getPosterPath()).placeholder(R.drawable.loading_image).into(movieImageView);
         }
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(itemView.getContext(), "CakeLyf", Toast.LENGTH_SHORT);
             int adapterPosition = getAdapterPosition();
             Movie movieToView = movies.get(adapterPosition);
             mClickHandler.onClick(movieToView);
