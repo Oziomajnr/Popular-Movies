@@ -1,6 +1,8 @@
 package com.example.ogbeoziomajnr.popularmovies.Util;
 
 import com.example.ogbeoziomajnr.popularmovies.Model.MovieResponse;
+import com.example.ogbeoziomajnr.popularmovies.Model.MovieTrailerResponse;
+import com.example.ogbeoziomajnr.popularmovies.Model.ReviewResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,4 +22,10 @@ public interface ApiInterface  {
 
     @GET("movie/{id}")
     Call<MovieResponse> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/videos")
+    Call<MovieTrailerResponse> getMovieVideos(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Call<ReviewResponse> getMovieReviews(@Path("id") int id, @Query("api_key") String apiKey);
 }
