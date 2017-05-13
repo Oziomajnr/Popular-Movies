@@ -3,5 +3,9 @@
     <string name="sort_by_popularity">Popular</string>
     <string name="sort_by_rating">Top Rated</string>
     <string name="refresh">Refresh</string>
+    <string name="favorite">Favourite</string>
     <string name="error_message">An error has occurred, try again </string>
+    <string name="fav_text">MARK AS FAVORITE</string>
+    <string name="read_review_text">READ REVIEW</string>
+    <string name="vote_total">/10</string>
 </resources>
