@@ -1,16 +1,19 @@
 package com.example.ogbeoziomajnr.popularmovies.Model;
 
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import android.os.Parcel;
 
 /**
  * Created by SQ-OGBE PC on 13/04/2017.
  */
 
-public class Movie implements Serializable {
+public class Movie implements Parcelable {
     @SerializedName("poster_path")
     private String posterPath;
     @SerializedName("overview")
@@ -21,8 +24,6 @@ public class Movie implements Serializable {
     private Integer id;
     @SerializedName("title")
     private String title;
-    @SerializedName("popularity")
-    private Double popularity;
     @SerializedName("vote_count")
     private Integer voteCount;
     @SerializedName("vote_average")
@@ -73,14 +74,6 @@ public class Movie implements Serializable {
         this.title = title;
     }
 
-    public Double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(Double popularity) {
-        this.popularity = popularity;
-    }
-
     public Integer getVoteCount() {
         return voteCount;
     }
@@ -103,5 +96,38 @@ public class Movie implements Serializable {
 
     public void setBackDropPath(String backDropPath) {
         this.backDropPath = backDropPath;
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            Movie mMovie = new Movie();
+            mMovie.title = source.readString();
+            mMovie.overview = source.readString();
+            mMovie.backDropPath = source.readString();
+            mMovie.voteAverage = source.readDouble();
+            mMovie.releaseDate = source.readString();
+            mMovie.id = source.readInt();
+            return  mMovie;
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(overview);
+        dest.writeString(backDropPath);
+        dest.writeDouble(voteAverage);
+        dest.writeString(releaseDate);
+        dest.writeInt(id);
     }
 }
