@@ -2,11 +2,13 @@ package com.example.ogbeoziomajnr.popularmovies.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +76,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mProgressDialog.setMessage("Loading");
         mProgressDialog.setCancelable(true);
 
+//        Display display = getWindowManager().getDefaultDisplay();
+//        Point size = new Point();
+//        display.getSize(size);
+//        int width = size.x;
+//        int height = size.y;
+
         layoutManager = new GridLayoutManager(this, 2);
         mMovieList.setLayoutManager(layoutManager);
 
@@ -83,9 +91,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         if (top_rated)
             getPopularMovies(CONSTANTS.category.TOP_RATED) ;
-        else{
+        else
             getPopularMovies(CONSTANTS.category.POPULAR) ;
-        }
 
 
         mMovieList.setAdapter(mAdapter);
@@ -219,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
 private void getPopularMovies (CONSTANTS.category category) {
     hideErrorMessage();
-    showprogressDialog();
     //Initialise the api interface
     ApiInterface apiService =
             ApiClient.getClient().create(ApiInterface.class);
@@ -236,7 +242,6 @@ private void getPopularMovies (CONSTANTS.category category) {
     call.enqueue(new Callback<MovieResponse>() {
         @Override
         public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-            hideprogressDialog();
             total_pages = response.body().getTotalPages();
             movies.addAll(response.body().getResults());
             mAdapter.setImageUrl(movies);
@@ -245,7 +250,6 @@ private void getPopularMovies (CONSTANTS.category category) {
 
         @Override
         public void onFailure(Call<MovieResponse> call, Throwable t) {
-            hideprogressDialog();
             // Log error here since request failed
             Log.e(TAG, t.toString());
             showErrorMessage();
@@ -254,17 +258,17 @@ private void getPopularMovies (CONSTANTS.category category) {
     });
   }
 
-    private   void showprogressDialog() {
-        if (!mProgressDialog.isShowing())
-            mProgressDialog.show();
-    }
-
-    private   void hideprogressDialog() {
-        if (mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-            mProgressDialog.cancel();
-        }
-    }
+//    private   void showprogressDialog() {
+//        if (!mProgressDialog.isShowing())
+//            mProgressDialog.show();
+//    }
+//
+//    private   void hideprogressDialog() {
+//        if (mProgressDialog.isShowing()) {
+//            mProgressDialog.dismiss();
+//            mProgressDialog.cancel();
+//        }
+//    }
 
     private void showErrorMessage () {
         txtErrorMessage.setGravity(Gravity.CENTER);
