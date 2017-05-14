@@ -4,6 +4,15 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id = "@+id/txt_current_category"
+        android:background="@color/colorAccentLight"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="#ffffff"
+        />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movies"
         android:layout_width="match_parent"
