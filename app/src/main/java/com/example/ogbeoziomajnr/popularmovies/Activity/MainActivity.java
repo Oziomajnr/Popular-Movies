@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ogbeoziomajnr.popularmovies.CONSTANTS;
-import com.example.ogbeoziomajnr.popularmovies.CustomCursorAdapter;
 import com.example.ogbeoziomajnr.popularmovies.Model.Movie;
 import com.example.ogbeoziomajnr.popularmovies.Model.MovieContract;
 import com.example.ogbeoziomajnr.popularmovies.MovieAdapter;
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     // variable to help keep track of category
     private boolean top_rated = true;
     private static final int TASK_LOADER_ID = 0;
-    private CustomCursorAdapter customCursorAdapter;
 
     // to help regulate loading of more items
     private boolean loading = false;
@@ -82,20 +80,31 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         ButterKnife.bind(this);
         mMovieList.setNestedScrollingEnabled(false);
 
-//        Display display = getWindowManager().getDefaultDisplay();
-//        Point size = new Point();
-//        display.getSize(size);
-//        int width = size.x;
-//        int height = size.y;
 
-        layoutManager = new GridLayoutManager(this, 3);
+        layoutManager = new GridLayoutManager(this,this.getResources().getInteger(R.integer.layout_manager_number_of_colums));
         mMovieList.setLayoutManager(layoutManager);
 
         mMovieList.setHasFixedSize(true);
 
         mAdapter = new MovieAdapter(this);
+        String category;
 
-        getPopularMovies(currentCategory);
+        if (savedInstanceState != null) {
+            category = savedInstanceState.getString("currentCategory");
+            if (category == CONSTANTS.category.POPULAR.toString()) {
+                currentCategory = CONSTANTS.category.POPULAR;
+            } else if (category == CONSTANTS.category.TOP_RATED.toString()) {
+                currentCategory = CONSTANTS.category.TOP_RATED;
+            } else if (category == CONSTANTS.category.FAVOURITE.toString()) {
+                currentCategory = CONSTANTS.category.FAVOURITE;
+            }
+        }
+        if (currentCategory.equals(CONSTANTS.category.FAVOURITE)) {
+            getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
+        }
+        else  {
+            getPopularMovies(currentCategory);
+        }
 
         mMovieList.setAdapter(mAdapter);
 
@@ -130,6 +139,28 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
         });
         setTxtCurrentCategory();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("currentCategory", currentCategory.toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+       String category = savedInstanceState.getString("currentCategory");
+        if (category == CONSTANTS.category.POPULAR.toString()) {
+            currentCategory = CONSTANTS.category.POPULAR;
+        }
+        else if (category == CONSTANTS.category.TOP_RATED.toString()) {
+            currentCategory = CONSTANTS.category.TOP_RATED;
+        }
+        else if (category == CONSTANTS.category.FAVOURITE.toString()) {
+            currentCategory = CONSTANTS.category.FAVOURITE;
+        }
+
     }
 
     @OnClick(R.id.btn_try_again)
@@ -201,12 +232,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
 
         movies = new ArrayList<>();
         current_page = 1;
-        getPopularMovies(currentCategory);
+
+        if (currentCategory.equals(CONSTANTS.category.FAVOURITE)) {
+            getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
+        }
+        else  {
+            getPopularMovies(currentCategory);
+        }
     }
 
 
@@ -228,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 total_pages = response.body().getTotalPages();
                 movies.addAll(response.body().getResults());
                 mAdapter.setImageUrl(movies);
-
+                setTxtCurrentCategory();
             }
 
             @Override
