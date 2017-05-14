@@ -74,10 +74,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             movieImageView = (ImageView) itemView.findViewById(R.id.img_movie_thumbnail);
             itemView.setOnClickListener(this);
         }
-
         void bind(int position) {
             Picasso.with(itemView.getContext()).load(IMAGE_BASE_URL+movies.get(position).getPosterPath()).placeholder(R.drawable.loading_image).into(movieImageView);
         }
+
 
         @Override
         public void onClick(View v) {
