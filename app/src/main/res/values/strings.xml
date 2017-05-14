@@ -6,6 +6,10 @@
     <string name="favorite">Favourite</string>
     <string name="error_message">An error has occurred, try again </string>
     <string name="fav_text">MARK AS FAVORITE</string>
+    <string name="unfav_text">UNMARK AS FAVORITE</string>
     <string name="read_review_text">READ REVIEW</string>
     <string name="vote_total">/10</string>
+    <string name="showing_fav">Showing Favourite Movies</string>
+    <string name="showing_top_rated">Showing Top Rated Movies</string>
+    <string name="showing_top_popular">Showing Popular Movies</string>
 </resources>
