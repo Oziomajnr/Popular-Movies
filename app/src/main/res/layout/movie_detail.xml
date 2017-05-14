@@ -23,11 +23,11 @@
             android:padding="24dp" />
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             app:layout_constraintTop_toBottomOf="@+id/txt_movie_title"
             app:layout_constraintLeft_toRightOf="parent"
             android:padding="8dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerInside"
             android:id = "@+id/img_back_drop"
 
             />
@@ -80,14 +80,7 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:padding="1dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/btn_read_review"
-            app:layout_constraintLeft_toRightOf="parent"
-            android:id="@+id/txt_trailer"
-            android:textSize="24sp"
-            android:text="Trailers :" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,27 +92,27 @@
             app:layout_goneMarginTop="8dp"
             android:textSize="24sp"
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/btn_read_review"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
+            android:id="@+id/txt_trailer"
+            android:textSize="24sp"
+            android:text="Trailer" />
         <ImageButton
             android:layout_width="120dp"
             android:layout_height="76dp"
             app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_trailer"
             android:id="@+id/img_button_trailer"
             android:src="@drawable/ic_play_arrow"
             android:scaleType="fitCenter"
             style="@style/Widget.AppCompat.Button"
             />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@+id/img_button_trailer"
-            app:layout_constraintTop_toBottomOf="@+id/img_button_trailer"
-            app:layout_constraintBottom_toTopOf="@+id/img_button_trailer"
-            android:id="@+id/txt_trailer1"
-            android:textSize="16sp"
-            android:textColor="#000000"
-            android:text="Trailer 1"
-            android:padding="24dp" />
+
 
     </android.support.constraint.ConstraintLayout>
 
