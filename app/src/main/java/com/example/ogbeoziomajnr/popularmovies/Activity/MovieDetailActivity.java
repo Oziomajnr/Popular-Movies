@@ -1,17 +1,19 @@
  package com.example.ogbeoziomajnr.popularmovies.Activity;
 
-import android.content.Context;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ogbeoziomajnr.popularmovies.Model.Movie;
+import com.example.ogbeoziomajnr.popularmovies.Model.MovieContract;
 import com.example.ogbeoziomajnr.popularmovies.Model.MovieTrailerResponse;
 import com.example.ogbeoziomajnr.popularmovies.Model.MovieTrailers;
 import com.example.ogbeoziomajnr.popularmovies.Model.Review;
@@ -43,6 +45,8 @@ import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.YOUTUBE_BASE_URL
     @BindView(R.id.txt_overview) TextView textViewOverview;
     @BindView(R.id.txt_movie_title) TextView textViewMovieTitle;
     @BindView(R.id.txt_vote_average) TextView textViewVoteAverage;
+    @BindView(R.id.btn_favorite) Button buttonFavorite;
+
 
     @BindView(R.id.img_back_drop) ImageView imageViewBackDrop;
 
@@ -54,6 +58,7 @@ import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.YOUTUBE_BASE_URL
      List<MovieTrailers> movieTrailers = new ArrayList<>();
      List<Review> movieReviews = new ArrayList<>();
      ApiInterface apiService;
+     boolean isFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,15 @@ import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.YOUTUBE_BASE_URL
         ButterKnife.bind(this);
 
         movie =  getIntent().getParcelableExtra("Movie");
+
+        Toast.makeText(this,String.valueOf(isFavorite(movie.getId())), Toast.LENGTH_LONG).show();
+        isFavorite = isFavorite(movie.getId());
+        if ( isFavorite ) {
+            buttonFavorite.setText(getString(R.string.unfav_text));
+        }
+        else  {
+            buttonFavorite.setText(getString(R.string.fav_text));
+        }
         //Initialise the api interface
         apiService =
                 ApiClient.getClient().create(ApiInterface.class);
@@ -73,7 +87,7 @@ import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.YOUTUBE_BASE_URL
        textViewVoteAverage.setText(Double.toString(movie.getVoteAverage()) +getResources().getString(R.string.vote_total));
 
         Picasso.with(this).load(IMAGE_BASE_URL+movie.getBackDropPath())
-                .placeholder(R.drawable.loading_image).into(imageViewBackDrop);
+                .placeholder(R.drawable.loading_image).error(R.drawable.error_image).into(imageViewBackDrop);
         getMovieTrailers();
         getReviews();
 
@@ -161,4 +175,68 @@ import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.YOUTUBE_BASE_URL
              startActivity(intent);
          }
      }
+
+     @OnClick(R.id.btn_favorite)
+     public void addMovieToDatabase () {
+
+         if (isFavorite) {
+             // Build appropriate uri with String row id appended
+             String stringId = String.valueOf(movie.getId());
+             Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+             uri = uri.buildUpon().appendPath(stringId).build();
+             // COMPLETED (2) Delete a single row of data using a ContentResolver
+            if (getContentResolver().delete(uri, null, null) > 0) {
+                isFavorite = false;
+                buttonFavorite.setText(getString(R.string.fav_text));
+            }
+             else {
+                Toast.makeText(this, "Unable To Remove Movie", Toast.LENGTH_SHORT).show();
+            }
+         }
+         else {
+
+             // Insert new movie data via a ContentResolver
+             // Create new empty ContentValues object
+             ContentValues contentValues = new ContentValues();
+
+             contentValues.put(MovieContract.MovieEntry.COLUMN_ID, movie.getId());
+             contentValues.put(MovieContract.MovieEntry.COLUMN_BACK_DROP_PATH, movie.getBackDropPath());
+             contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
+             contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER, movie.getPosterPath());
+             contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+             contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
+             contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+
+             // Insert the content values via a ContentResolver
+             Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
+             // Display the URI that's returned with a Toast
+             // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
+             if(uri != null) {
+                buttonFavorite.setText(getString(R.string.unfav_text));
+                 isFavorite = true;
+             }
+         }
+
+
+     }
+
+
+     private boolean isFavorite(int movie_id) {
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(movie_id)).build();
+         try {
+           Cursor cursor = getContentResolver().query(uri, null, "id=" + String.valueOf(movie_id), null, MovieContract.MovieEntry.COLUMN_ID);
+             if (cursor != null && cursor.getCount() > 0) {
+                 return  true;
+             }
+             return false;
+         }
+         catch (Exception ex) {
+             Toast.makeText(this,ex.getMessage(), Toast.LENGTH_LONG).show();
+             Log.e(TAG, ex.toString());
+             return false;
+         }
+     }
+
+
 }
