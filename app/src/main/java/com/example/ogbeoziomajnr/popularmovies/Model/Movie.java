@@ -24,8 +24,6 @@ public class Movie implements Parcelable {
     private Integer id;
     @SerializedName("title")
     private String title;
-    @SerializedName("vote_count")
-    private Integer voteCount;
     @SerializedName("vote_average")
     private Double voteAverage;
     @SerializedName("backdrop_path")
@@ -74,14 +72,6 @@ public class Movie implements Parcelable {
         this.title = title;
     }
 
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
-    }
-
     public Double getVoteAverage() {
         return voteAverage;
     }
@@ -107,6 +97,7 @@ public class Movie implements Parcelable {
             mMovie.backDropPath = source.readString();
             mMovie.voteAverage = source.readDouble();
             mMovie.releaseDate = source.readString();
+            mMovie.posterPath = source.readString();
             mMovie.id = source.readInt();
             return  mMovie;
         }
@@ -128,6 +119,7 @@ public class Movie implements Parcelable {
         dest.writeString(backDropPath);
         dest.writeDouble(voteAverage);
         dest.writeString(releaseDate);
+        dest.writeString(posterPath);
         dest.writeInt(id);
     }
 }
