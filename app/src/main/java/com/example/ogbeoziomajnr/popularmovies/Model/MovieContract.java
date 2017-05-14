@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
 
 public class MovieContract {
 
-    public static final String AUTHORITY = "com.example.ogbeoziomajnr.movies";
+    public static final String AUTHORITY = "com.example.ogbeoziomajnr.popularmovies";
 
     // The base content URI = "content://" + <authority>
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
