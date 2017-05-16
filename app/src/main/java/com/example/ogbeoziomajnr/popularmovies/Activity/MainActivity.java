@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.ogbeoziomajnr.popularmovies.CONSTANTS;
+import com.example.ogbeoziomajnr.popularmovies.Constants;
 import com.example.ogbeoziomajnr.popularmovies.Model.Movie;
 import com.example.ogbeoziomajnr.popularmovies.Model.MovieContract;
 import com.example.ogbeoziomajnr.popularmovies.MovieAdapter;
@@ -36,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.API_KEY;
+import static com.example.ogbeoziomajnr.popularmovies.Constants.API_KEY;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     Call<MovieResponse> call;
 
     private String TAG = this.getClass().getName();
-    private CONSTANTS.category currentCategory = CONSTANTS.category.TOP_RATED;
+    private Constants.category currentCategory = Constants.category.TOP_RATED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // bind all views to object using butter knife
         ButterKnife.bind(this);
         mMovieList.setNestedScrollingEnabled(false);
-
 
         layoutManager = new GridLayoutManager(this,this.getResources().getInteger(R.integer.layout_manager_number_of_colums));
         mMovieList.setLayoutManager(layoutManager);
@@ -91,15 +90,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         if (savedInstanceState != null) {
             category = savedInstanceState.getString("currentCategory");
-            if (category == CONSTANTS.category.POPULAR.toString()) {
-                currentCategory = CONSTANTS.category.POPULAR;
-            } else if (category == CONSTANTS.category.TOP_RATED.toString()) {
-                currentCategory = CONSTANTS.category.TOP_RATED;
-            } else if (category == CONSTANTS.category.FAVOURITE.toString()) {
-                currentCategory = CONSTANTS.category.FAVOURITE;
+            if (category == Constants.category.POPULAR.toString()) {
+                currentCategory = Constants.category.POPULAR;
+            } else if (category == Constants.category.TOP_RATED.toString()) {
+                currentCategory = Constants.category.TOP_RATED;
+            } else if (category == Constants.category.FAVOURITE.toString()) {
+                currentCategory = Constants.category.FAVOURITE;
             }
         }
-        if (currentCategory.equals(CONSTANTS.category.FAVOURITE)) {
+        if (currentCategory.equals(Constants.category.FAVOURITE)) {
             getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
         }
         else  {
@@ -123,10 +122,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                             if (current_page < total_pages) {
                                 current_page++;
-                                if (currentCategory.equals(CONSTANTS.category.TOP_RATED))
-                                    getPopularMovies(CONSTANTS.category.TOP_RATED);
-                                else if (currentCategory.equals(CONSTANTS.category.POPULAR)) {
-                                    getPopularMovies(CONSTANTS.category.POPULAR);
+                                if (currentCategory.equals(Constants.category.TOP_RATED))
+                                    getPopularMovies(Constants.category.TOP_RATED);
+                                else if (currentCategory.equals(Constants.category.POPULAR)) {
+                                    getPopularMovies(Constants.category.POPULAR);
                                 } else {
 
                                 }
@@ -151,14 +150,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
        String category = savedInstanceState.getString("currentCategory");
-        if (category == CONSTANTS.category.POPULAR.toString()) {
-            currentCategory = CONSTANTS.category.POPULAR;
+        if (category == Constants.category.POPULAR.toString()) {
+            currentCategory = Constants.category.POPULAR;
         }
-        else if (category == CONSTANTS.category.TOP_RATED.toString()) {
-            currentCategory = CONSTANTS.category.TOP_RATED;
+        else if (category == Constants.category.TOP_RATED.toString()) {
+            currentCategory = Constants.category.TOP_RATED;
         }
-        else if (category == CONSTANTS.category.FAVOURITE.toString()) {
-            currentCategory = CONSTANTS.category.FAVOURITE;
+        else if (category == Constants.category.FAVOURITE.toString()) {
+            currentCategory = Constants.category.FAVOURITE;
         }
 
     }
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public void reloadData() {
         current_page = 1;
         movies = new ArrayList<>();
-        if (currentCategory.equals(CONSTANTS.category.FAVOURITE)) {
+        if (currentCategory.equals(Constants.category.FAVOURITE)) {
             getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
             setTxtCurrentCategory();
         } else {
@@ -192,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 current_page = 1;
                 movies = new ArrayList<>();
-                currentCategory = CONSTANTS.category.TOP_RATED;
+                currentCategory = Constants.category.TOP_RATED;
                 setTxtCurrentCategory();
                 getPopularMovies(currentCategory);
 
@@ -201,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             case R.id.by_popularity:
                 movies = new ArrayList<>();
                 current_page = 1;
-                currentCategory = CONSTANTS.category.POPULAR;
+                currentCategory = Constants.category.POPULAR;
                 setTxtCurrentCategory();
                 getPopularMovies(currentCategory);
                 return true;
@@ -214,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
             case R.id.favorite:
                 movies = new ArrayList<>();
-                currentCategory = CONSTANTS.category.FAVOURITE;
+                currentCategory = Constants.category.FAVOURITE;
                 setTxtCurrentCategory();
                 getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
                 return true;
@@ -238,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         movies = new ArrayList<>();
         current_page = 1;
 
-        if (currentCategory.equals(CONSTANTS.category.FAVOURITE)) {
+        if (currentCategory.equals(Constants.category.FAVOURITE)) {
             getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
         }
         else  {
@@ -247,15 +246,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
 
-    private void getPopularMovies(CONSTANTS.category category) {
+    private void getPopularMovies(Constants.category category) {
         hideErrorMessage();
         //Initialise the api interface
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        if (category == CONSTANTS.category.TOP_RATED) {
+        if (category == Constants.category.TOP_RATED) {
             call = apiService.getTopRatedMovies(API_KEY, current_page);
-        } else if (category == CONSTANTS.category.POPULAR) {
+        } else if (category == Constants.category.POPULAR) {
             call = apiService.getPopularRatedMovies(API_KEY, current_page);
         }
 
@@ -393,11 +392,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void setTxtCurrentCategory() {
-        if (currentCategory.equals(CONSTANTS.category.POPULAR)) {
+        if (currentCategory.equals(Constants.category.POPULAR)) {
             txtCurrentCategory.setText(getString(R.string.showing_top_popular));
-        } else if (currentCategory.equals(CONSTANTS.category.TOP_RATED)) {
+        } else if (currentCategory.equals(Constants.category.TOP_RATED)) {
             txtCurrentCategory.setText(getString(R.string.showing_top_rated));
-        } else if (currentCategory.equals(CONSTANTS.category.FAVOURITE)) {
+        } else if (currentCategory.equals(Constants.category.FAVOURITE)) {
             txtCurrentCategory.setText(getString(R.string.showing_fav));
         }
     }

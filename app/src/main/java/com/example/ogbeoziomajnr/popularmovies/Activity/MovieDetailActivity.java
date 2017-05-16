@@ -33,9 +33,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.API_KEY;
-import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.IMAGE_BASE_URL;
-import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.YOUTUBE_BASE_URL;
+import static com.example.ogbeoziomajnr.popularmovies.Constants.API_KEY;
+import static com.example.ogbeoziomajnr.popularmovies.Constants.IMAGE_BASE_URL;
+import static com.example.ogbeoziomajnr.popularmovies.Constants.YOUTUBE_BASE_URL;
 
 
  public class MovieDetailActivity extends AppCompatActivity {
@@ -68,8 +68,8 @@ import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.YOUTUBE_BASE_URL
 
         movie =  getIntent().getParcelableExtra("Movie");
 
-        Toast.makeText(this,String.valueOf(isFavorite(movie.getId())), Toast.LENGTH_LONG).show();
         isFavorite = isFavorite(movie.getId());
+
         if ( isFavorite ) {
             buttonFavorite.setText(getString(R.string.unfav_text));
         }

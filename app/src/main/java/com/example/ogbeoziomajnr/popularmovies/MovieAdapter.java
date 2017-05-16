@@ -7,14 +7,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.ogbeoziomajnr.popularmovies.Model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import static com.example.ogbeoziomajnr.popularmovies.CONSTANTS.IMAGE_BASE_URL;
+import static com.example.ogbeoziomajnr.popularmovies.Constants.IMAGE_BASE_URL;
 
 /**
  * Created by SQ-OGBE PC on 13/04/2017.
@@ -66,6 +65,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+
 
         ImageView movieImageView;
 
