@@ -27,7 +27,7 @@
             app:layout_constraintTop_toBottomOf="@+id/txt_movie_title"
             app:layout_constraintLeft_toRightOf="parent"
             android:padding="8dp"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:id = "@+id/img_back_drop"
 
             />
